@@ -1,11 +1,10 @@
-package java.hanoi;
+package hanoi;
 
-import java.hanoi.service.GameManager;
+import hanoi.service.GameManager;
+import hanoi.ui.ConsoleUI;
 
 public class Main {
     public static void main(String[] args) {
-        GameManager game = new GameManager(4);
-        game.startGame();
+        ConsoleUI.main(args);
     }
 }
-

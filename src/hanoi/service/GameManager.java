@@ -1,59 +1,77 @@
-package java.hanoi.service;
+package hanoi.service;
 
-import java.hanoi.model.Stack;
-import java.hanoi.ui.ConsoleUI;
+import hanoi.model.Stack;
+import hanoi.model.Node;
 
 public class GameManager {
-    private Stack torreA;
-    private Stack torreB;
-    private Stack torreC;
-    private int numeroDiscos;
+    private Stack pilhaA;
+    private Stack pilhaB;
+    private Stack pilhaC;
 
-    public GameManager(int numeroDiscos) {
-        this.numeroDiscos = numeroDiscos;
-        torreA = new Stack();
-        torreB = new Stack();
-        torreC = new Stack();
-
-        for (int i = numeroDiscos; i >= 1; i--) {
-            torreA.push(i);
-        }
+    public GameManager() {
+        pilhaA = new Stack();
+        pilhaB = new Stack();
+        pilhaC = new Stack();
     }
 
-    public void startGame() {
-        ConsoleUI ui = new ConsoleUI();
-        while (torreC.size() < numeroDiscos) {
-            ui.exibirTorres(torreA, torreB, torreC);
-            char origem = ui.getInput("Escolha a torre de origem (A, B, C): ");
-            char destino = ui.getInput("Escolha a torre de destino (A, B, C): ");
+    public void inicializarDiscos() {
+        pilhaA.push("vermelho");
+        pilhaA.push("branco");
+        pilhaA.push("azul");
+    }
 
-            Stack torreOrigem = getTorre(origem);
-            Stack torreDestino = getTorre(destino);
+    public void moverDisco(char de, char para) {
+        Stack origem = getPilha(de);
+        Stack destino = getPilha(para);
 
-            if (torreOrigem != null && torreDestino != null) {
-                moverDisco(torreOrigem, torreDestino);
+        if (origem != null && !origem.isEmpty()) {
+            String disco = origem.pop();
+            if (destino.isEmpty() || maiorDisco(disco, destino.peek())) {
+                destino.push(disco);
+                System.out.println("Movendo disco " + disco + " de " + de + " para " + para);
             } else {
-                System.out.println("Torres inválidas!");
+                origem.push(disco);
+                System.out.println("Movimento inválido: disco maior não pode ir para a pilha com disco menor.");
             }
         }
-        System.out.println("Parabéns! Você concluiu o jogo.");
     }
 
-    private Stack getTorre(char torre) {
-        return switch (torre) {
-            case 'A' -> torreA;
-            case 'B' -> torreB;
-            case 'C' -> torreC;
-            default -> null;
-        };
-    }
-
-    private boolean moverDisco(Stack origem, Stack destino) {
-        if (!origem.isEmpty() && (destino.isEmpty() || origem.peek() < destino.peek())) {
-            destino.push(origem.pop());
+    public boolean maiorDisco(String disco1, String disco2) {
+        if (disco1.equals("azul") && !disco2.equals("azul")) {
             return true;
+        } else if (disco1.equals("branco") && disco2.equals("vermelho")) {
+            return true;
+        } else if (disco1.equals("vermelho") && !disco2.equals("vermelho")) {
+            return false;
         }
-        System.out.println("Movimento inválido!");
         return false;
+    }
+
+
+
+    public Stack getPilha(char nome) {
+        switch (nome) {
+            case 'A': return pilhaA;
+            case 'B': return pilhaB;
+            case 'C': return pilhaC;
+            default: return null;
+        }
+    }
+
+    public void exibirPilhass() {
+        exibirPilha(pilhaA, 'A');
+        exibirPilha(pilhaB, 'B');
+        exibirPilha(pilhaC, 'C');
+    }
+
+    private void exibirPilha(Stack pilha, char nome) {
+        System.out.println("Pilha " + nome);
+        Node temp = pilha.peekNode();
+        System.out.println("      |      ");
+        while (temp != null) {
+            System.out.println("|==" + temp.getDisco() + "==|");
+            temp = temp.getNext();
+        }
+        System.out.println("______|______\n\n\n");
     }
 }

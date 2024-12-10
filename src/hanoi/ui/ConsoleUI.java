@@ -1,42 +1,20 @@
-package java.hanoi.ui;
+package hanoi.ui;
 
-import java.hanoi.model.Stack;
+import hanoi.service.GameManager;
 import java.util.Scanner;
 
 public class ConsoleUI {
-    private Scanner scanner;
+    public static void main(String[] args) {
+        GameManager game = new GameManager();
+        game.inicializarDiscos();
 
-    public ConsoleUI() {
-        this.scanner = new Scanner(System.in);
-    }
-
-    public void exibirTorres(Stack torreA, Stack torreB, Stack torreC) {
-        int altura = Math.max(torreA.size(), Math.max(torreB.size(), torreC.size()));
-
-        for (int i = altura - 1; i >= 0; i--) {
-            exibirDisco(torreA, i);
-            System.out.print("   ");
-            exibirDisco(torreB, i);
-            System.out.print("   ");
-            exibirDisco(torreC, i);
-            System.out.println();
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            game.exibirPilhass();
+            System.out.println("Digite o movimento (ex: A B para mover de A para B): ");
+            char de = scanner.next().charAt(0);
+            char para = scanner.next().charAt(0);
+            game.moverDisco(de, para);
         }
-        System.out.println("  A       B       C  ");
-    }
-
-    private void exibirDisco(Stack torre, int nivel) {
-        int[] elementos = torre.toArray();
-        if (nivel < elementos.length) {
-            int tamanhoDisco = elementos[nivel];
-            String disco = "=".repeat(tamanhoDisco * 2);
-            System.out.printf("%" + (10 - tamanhoDisco) + "s%-" + (10 - tamanhoDisco) + "s", disco, disco);
-        } else {
-            System.out.print("    |    ");
-        }
-    }
-
-    public char getInput(String mensagem) {
-        System.out.print(mensagem);
-        return scanner.next().toUpperCase().charAt(0);
     }
 }
