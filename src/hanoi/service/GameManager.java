@@ -3,10 +3,14 @@ package hanoi.service;
 import hanoi.model.Stack;
 import hanoi.model.Node;
 
+import java.util.Scanner;
+
 public class GameManager {
     private Stack pilhaA;
     private Stack pilhaB;
     private Stack pilhaC;
+    private int limiteMovimentos = 7;
+    private int movimentosAtuais = 0;
 
     public GameManager() {
         pilhaA = new Stack();
@@ -21,6 +25,11 @@ public class GameManager {
     }
 
     public void moverDisco(char de, char para) {
+        if (movimentosAtuais >= limiteMovimentos) {
+            System.out.println("Você excedeu o limite de movimentos. Fim de jogo!");
+            return;
+        }
+
         Stack origem = getPilha(de);
         Stack destino = getPilha(para);
 
@@ -28,10 +37,19 @@ public class GameManager {
             String disco = origem.pop();
             if (destino.isEmpty() || maiorDisco(disco, destino.peek())) {
                 destino.push(disco);
+                movimentosAtuais++;
                 System.out.println("Movendo disco " + disco + " de " + de + " para " + para);
+                System.out.println(pilhaC.size());
+                if (verificarFimDeJogo() != null){
+                    System.out.println(verificarFimDeJogo());
+                }
             } else {
+                Scanner scanner = new Scanner(System.in);
                 origem.push(disco);
                 System.out.println("Movimento inválido: disco maior não pode ir para a pilha com disco menor.");
+                System.out.println("Aperte 'ENTER' para recomeçar.");
+                scanner.next();
+                inicializarDiscos();
             }
         }
     }
@@ -46,8 +64,6 @@ public class GameManager {
         }
         return false;
     }
-
-
 
     public Stack getPilha(char nome) {
         switch (nome) {
@@ -73,5 +89,16 @@ public class GameManager {
             temp = temp.getNext();
         }
         System.out.println("______|______\n\n\n");
+    }
+
+    public String verificarFimDeJogo() {
+        if (pilhaC.size() == 3){
+            return "Você venceu!";
+        }
+        return null;
+    }
+
+    public int getMovimentosAtuais() {
+        return movimentosAtuais;
     }
 }

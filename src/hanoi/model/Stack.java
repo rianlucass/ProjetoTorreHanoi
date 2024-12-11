@@ -19,7 +19,7 @@ public class Stack {
             top = top.getNext();
             return disco;
         }
-        return null; // Caso a pilha esteja vazia
+        return null;
     }
 
     public String peek() {
@@ -32,5 +32,15 @@ public class Stack {
 
     public Node peekNode() {
         return top;
+    }
+
+    public int size() {
+        int count = 0;
+        Node current = top;
+        while (current != null) {
+            count++;
+            current = current.getNext();
+        }
+        return count;
     }
 }
